@@ -54,7 +54,7 @@ The script:
 
 Clone your dotfiles repository:
 
-```bash
+```
 git clone https://github.com/alpaca97745CEG2350/dotfiles.git ~/github/dotfiles
 
 The script and all supporting files must be in this directory on your local system ~/github/dotfiles/homefiles
