@@ -1,64 +1,27 @@
-#!/bin/bash
+This contains a bash script to automate the installation of the official AWS Command Line Interface (AWS CLI v2) on Debian and Ubuntu-based Linux systems.
 
-# Checks **Effective User ID** EUID.
-# If the EUID is not 0 (root), exit and prompt the user.
-if [ "$EUID" -ne 0 ]; then
-    echo "Error: This script requires sudo or root privileges. Please run with sudo."
-    exit 1
-fi
+## Features
 
-# 2. Check that the system package manager is 'apt'
-# If the 'apt' command is not found, exit and prompt the user.
-if ! command -v apt &> /dev/null; then
-    echo "Error: This script uses the 'apt' package manager, which is not available on this system."
-    exit 1
-fi
+- **Script Information**:
+  - The script is run with `sudo` or root privileges.
+  - Verifies the presence of the `apt` package manager.
+  - Checks for existing `aws` command installations to prevent unintended overwrites.
+- **Safety First**: Prompts the user for explicit confirmation before proceeding with any system changes.
+- **Automated Dependencies**: Silently installs necessary prerequisites (`curl` and `unzip`) using `apt`.
+- **Clean Execution**: Downloads and extracts the AWS CLI binaries in the `/tmp` directory and automatically cleans up all installation artifacts once finished.
 
-# 3. Check for name conflicts
-# If the 'aws' command already exists, abort to prevent overwriting system behavior.
-if command -v aws &> /dev/null; then
-    echo "Error: A command named 'aws' already exists on this system. Name conflict occurred. Exiting to prevent unintended changes."
-    exit 1
-fi
+## Prerequisites
 
-# 4. Provide information and prompt the user
-echo "This script will install the official AWS Command Line Interface (AWS CLI v2)."
-echo "It will also silently install required dependencies: 'curl' and 'unzip'."
-read -p "Do you want to proceed with the installation? (y/n): " confirm
+- A Linux system using the `apt` package manager (e.g., Ubuntu, Debian).
+- Sudo/root access.
+- Internet connectivity to download the AWS CLI binaries.
 
-if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-    echo "Installation aborted by user."
-    exit 0
-fi
+## Usage
 
-# 5. Silently install dependencies and the software
-echo "Installing dependencies silently..."
-# -qq suppresses apt output, -y assumes yes to prompts, > /dev/null throws away the standard output
-apt update -qq
-apt install -y curl unzip > /dev/null 2>&1
+1. Save the provided bash script to a file, for example: `install_aws_cli.sh`.
+2. Make the script executable:
+Code output
+File created successfully.
 
-echo "Downloading and installing AWS CLI v2 silently..."
-# Move to the temporary directory to keep the filesystem clean
-cd /tmp || exit
-
-# Download the installation zip silently (-s)
-curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-
-# Unzip quietly (-q)
-unzip -q awscliv2.zip
-
-# Run the official AWS install script silently
-./aws/install > /dev/null 2>&1
-
-# Clean up the temporary downloaded files
-rm -rf awscliv2.zip aws/
-
-# 6. Installation complete prompt
-echo "---------------------------------------------------"
-echo "Installation complete!"
-echo "To verify the installation and try it out, please run:"
-echo "aws --version"
-echo "---------------------------------------------------"
-
-![https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions](AWS CLI intalling or updating to the latest version)
-Generative AI was used writing this script. What are the commands needed to write a script that performs [insert task here]?
+```bash
+   chmod +x install_aws_cli.sh
